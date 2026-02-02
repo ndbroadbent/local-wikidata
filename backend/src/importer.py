@@ -36,7 +36,8 @@ def load_progress(progress_path: Path) -> dict[str, Any]:
     """Load import progress from file."""
     if progress_path.exists():
         with open(progress_path) as f:
-            return json.load(f)
+            data: dict[str, Any] = json.load(f)
+            return data
     return {"bytes_read": 0, "entities_imported": 0, "last_id": None}
 
 
@@ -55,7 +56,8 @@ def parse_entity(line: str) -> dict[str, Any] | None:
     if line.endswith(","):
         line = line[:-1]
     try:
-        return json.loads(line)
+        result: dict[str, Any] = json.loads(line)
+        return result
     except json.JSONDecodeError:
         return None
 
