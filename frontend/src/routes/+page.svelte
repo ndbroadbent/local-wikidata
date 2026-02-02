@@ -113,7 +113,7 @@
 				</div>
 				{#each Object.entries(stats.by_type) as [type, count]}
 					<div class="rounded-lg bg-gray-50 p-4">
-						<dt class="text-sm font-medium text-gray-500 capitalize">{type}s</dt>
+						<dt class="text-sm font-medium capitalize text-gray-500">{type}s</dt>
 						<dd class="mt-1 text-2xl font-semibold text-gray-900">{count.toLocaleString()}</dd>
 					</div>
 				{/each}
