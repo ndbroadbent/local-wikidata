@@ -2,6 +2,10 @@
 
 Self-hosted Wikidata mirror for personal knowledge bases, AI agents, and offline-first applications.
 
+<p align="center">
+  <img src="docs/screenshot.jpg" alt="local-wikidata search UI" width="800">
+</p>
+
 ## Why?
 
 Wikidata is an incredible structured knowledge base with 100M+ entities. But:
