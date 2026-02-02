@@ -6,43 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import settings
-
-# Schema for the database
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS entities (
-    id TEXT PRIMARY KEY,
-    type TEXT NOT NULL,
-    labels_json TEXT,
-    descriptions_json TEXT,
-    aliases_json TEXT,
-    claims_json TEXT,
-    sitelinks_json TEXT,
-    modified TEXT,
-    imported_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE VIRTUAL TABLE IF NOT EXISTS entities_fts USING fts5(
-    id,
-    label_en,
-    description_en,
-    aliases_en,
-    content=entities,
-    content_rowid=rowid
-);
-
-CREATE TRIGGER IF NOT EXISTS entities_ai AFTER INSERT ON entities BEGIN
-    INSERT INTO entities_fts(rowid, id, label_en, description_en, aliases_en)
-    VALUES (
-        new.rowid,
-        new.id,
-        json_extract(new.labels_json, '$.en.value'),
-        json_extract(new.descriptions_json, '$.en.value'),
-        json_extract(new.aliases_json, '$.en')
-    );
-END;
-
-CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(type);
-"""
+from .schema import SCHEMA
 
 
 def get_connection() -> sqlite3.Connection:
