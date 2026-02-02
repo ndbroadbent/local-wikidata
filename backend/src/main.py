@@ -1,5 +1,7 @@
 """FastAPI application for local-wikidata."""
 
+from typing import Any
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,7 +31,7 @@ async def health() -> dict[str, str]:
 
 
 @app.get("/entity/{entity_id}")
-async def get_entity_by_id(entity_id: str) -> dict:
+async def get_entity_by_id(entity_id: str) -> dict[str, Any]:
     """
     Get an entity by its Wikidata ID.
 
@@ -49,7 +51,7 @@ async def get_entity_by_id(entity_id: str) -> dict:
 async def search(
     q: str = Query(..., min_length=1, description="Search query"),
     limit: int = Query(10, ge=1, le=100, description="Max results"),
-) -> dict:
+) -> dict[str, Any]:
     """
     Search for entities by label or description.
 
@@ -65,7 +67,7 @@ async def search(
 
 
 @app.get("/stats")
-async def stats() -> dict:
+async def stats() -> dict[str, Any]:
     """
     Get database statistics.
 
