@@ -1,0 +1,6 @@
+[tools]
+python = "3.12"
+node = "22"
+
+[env]
+VIRTUAL_ENV = "{{config_root}}/backend/.venv"

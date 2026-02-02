@@ -1,0 +1,39 @@
+# Git hooks managed by Lefthook
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: true
+  commands:
+    format-backend:
+      glob: "backend/**/*.py"
+      run: cd backend && uv run ruff format --check .
+    
+    format-frontend:
+      glob: "frontend/**/*.{ts,svelte}"
+      run: cd frontend && bun run format:check
+    
+    lint-backend:
+      glob: "backend/**/*.py"
+      run: cd backend && uv run ruff check .
+    
+    lint-frontend:
+      glob: "frontend/**/*.{ts,svelte}"
+      run: cd frontend && bun run lint
+
+pre-push:
+  commands:
+    # CRITICAL: Scan for secrets before pushing to public repo
+    secrets:
+      run: |
+        if command -v trufflehog &> /dev/null; then
+          trufflehog git file://. --since-commit HEAD~1 --fail --no-update
+        else
+          echo "⚠️  TruffleHog not installed. Install with: brew install trufflehog"
+          echo "    Skipping secrets scan - INSTALL TRUFFLEHOG FOR SECURITY"
+        fi
+    
+    typecheck:
+      run: task typecheck
+    
+    test:
+      run: task test

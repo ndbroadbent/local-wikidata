@@ -1,0 +1,201 @@
+version: "3"
+
+vars:
+  BACKEND_DIR: ./backend
+  FRONTEND_DIR: ./frontend
+
+tasks:
+  # Setup
+  setup:
+    desc: Install all dependencies
+    cmds:
+      - task: setup:backend
+      - task: setup:frontend
+
+  setup:backend:
+    desc: Install backend dependencies
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv sync
+
+  setup:frontend:
+    desc: Install frontend dependencies
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun install
+
+  # Development
+  dev:
+    desc: Start development servers
+    deps: [dev:backend, dev:frontend]
+
+  dev:backend:
+    desc: Start backend dev server
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run uvicorn src.main:app --reload --port 8000
+
+  dev:frontend:
+    desc: Start frontend dev server
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run dev
+
+  # Build
+  build:
+    desc: Build for production
+    cmds:
+      - task: build:frontend
+
+  build:frontend:
+    desc: Build frontend
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run build
+
+  # Testing
+  test:
+    desc: Run all tests
+    cmds:
+      - task: test:backend
+      - task: test:frontend
+
+  test:backend:
+    desc: Run backend tests
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run pytest
+
+  test:frontend:
+    desc: Run frontend tests
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun test
+
+  # Code Quality
+  format:
+    desc: Format all code
+    cmds:
+      - task: format:backend
+      - task: format:frontend
+
+  format:backend:
+    desc: Format backend code
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run ruff format .
+
+  format:frontend:
+    desc: Format frontend code
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run format
+
+  format:check:
+    desc: Check formatting
+    cmds:
+      - task: format:check:backend
+      - task: format:check:frontend
+
+  format:check:backend:
+    desc: Check backend formatting
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run ruff format --check .
+
+  format:check:frontend:
+    desc: Check frontend formatting
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run format:check
+
+  lint:
+    desc: Lint all code
+    cmds:
+      - task: lint:backend
+      - task: lint:frontend
+
+  lint:backend:
+    desc: Lint backend code
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run ruff check .
+
+  lint:frontend:
+    desc: Lint frontend code
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run lint
+
+  typecheck:
+    desc: Type check all code
+    cmds:
+      - task: typecheck:backend
+      - task: typecheck:frontend
+
+  typecheck:backend:
+    desc: Type check backend
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run mypy src
+
+  typecheck:frontend:
+    desc: Type check frontend
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - bun run typecheck
+
+  check-length:
+    desc: Check file length limits
+    cmds:
+      - ./bin/check-file-length.sh
+
+  jscpd:
+    desc: Check for duplicate code
+    cmds:
+      - bunx jscpd backend/src frontend/src --ignore "**/node_modules/**,**/.venv/**"
+
+  # CI
+  ci:
+    desc: Run all CI checks
+    cmds:
+      - task: format:check
+      - task: lint
+      - task: typecheck
+      - task: check-length
+      - task: test
+      - task: build
+      - echo "✅ All CI checks passed!"
+
+  # Data
+  import:
+    desc: Import Wikidata dump
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - uv run python -m src.import
+
+  import:status:
+    desc: Check import progress
+    cmds:
+      - cat backend/data/import_progress.json 2>/dev/null || echo "No import in progress"
+
+  # Docker
+  docker:build:
+    desc: Build Docker images
+    cmds:
+      - docker compose build
+
+  docker:up:
+    desc: Start Docker containers
+    cmds:
+      - docker compose up -d
+
+  docker:down:
+    desc: Stop Docker containers
+    cmds:
+      - docker compose down
+
+  docker:logs:
+    desc: View Docker logs
+    cmds:
+      - docker compose logs -f

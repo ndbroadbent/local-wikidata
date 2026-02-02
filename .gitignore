@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+build/
+.svelte-kit/
+*.egg-info/
+
+# Data files (too large for git)
+*.db
+*.db-wal
+*.db-shm
+*.json.bz2
+*.json.gz
+data/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Test/Coverage
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+
+# Import state (can be regenerated)
+**/import_progress.json
