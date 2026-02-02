@@ -166,7 +166,7 @@ def import_dump(
                         print(
                             f"Imported {entities_imported:,} entities "
                             f"({rate:.0f}/sec, last: {data['id']}, "
-                            f"elapsed: {total_elapsed/3600:.1f}h)"
+                            f"elapsed: {total_elapsed / 3600:.1f}h)"
                         )
                         last_report_time = time.time()
 
@@ -197,7 +197,7 @@ def import_dump(
     total_time = time.time() - start_time
     print("\nImport complete!")
     print(f"Total entities: {entities_imported:,}")
-    print(f"Total time: {total_time/3600:.1f} hours")
+    print(f"Total time: {total_time / 3600:.1f} hours")
 
     conn.close()
 
