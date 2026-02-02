@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .database import get_entity, search_entities, get_stats
+from .database import get_entity, get_stats, search_entities
 
 app = FastAPI(
     title="local-wikidata",
