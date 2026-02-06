@@ -1,0 +1,18 @@
+when:
+  - event: push
+    branch: main
+
+steps:
+  - name: build-backend
+    image: plugins/docker
+    settings:
+      registry: git.home.ndbroadbent.com
+      repo: git.home.ndbroadbent.com/home/local-wikidata-backend
+      dockerfile: docker/Dockerfile.backend
+      tags:
+        - latest
+        - ${CI_COMMIT_SHA:0:8}
+      username:
+        from_secret: gitea_username
+      password:
+        from_secret: gitea_password
